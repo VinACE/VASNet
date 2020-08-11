@@ -34,7 +34,7 @@ class SelfAttention(nn.Module):
         
         attention = torch.softmax(energy / (self.embed_size ** (1/2)), dim=3) # Attention(Q,K,V) = sofmax(QK^{T}/(d_{k})**(1/2)) * V
 
-        out = torch.einsum("nhql,nlhd->nqhd",[attention, values]).reshape(
+        out = torch.einsum("nhql,nlhd->nqhd", [attention, values]).reshape(
             N, query_len, self.heads * self.head_dim
         )
         # Attention shape: (N, heads, query_len, key_len)
