@@ -110,7 +110,7 @@ class Encoder(nn.Module):
         return out  # should we return the weights in Encoder.. or is it ok only to return on the Decoder part...
     
 class DecoderBlock(nn.Module):
-    def __init__(self, embed_size, heads, forward_expansion, droput, device):
+    def __init__(self, embed_size, heads, forward_expansion, dropout, device):
         super(DecoderBlock, self).__init__()
         self.attention = SelfAttention(embed_size, heads)
         self.norm = nn.LayerNorm(embed_size)
