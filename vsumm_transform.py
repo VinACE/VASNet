@@ -53,7 +53,7 @@ class TransformerBlock(nn.Module):
         self.norm1 = nn.LayerNorm(embed_size)
         self.norm2 = nn.LayerNorm(embed_size)
 
-        self.feed_forward = nn.sequential(
+        self.feed_forward = nn.Sequential(
             nn.Linear(embed_size, forward_expansion*embed_size),
             nn.ReLU(),
             nn.Linear(forward_expansion*embed_size, embed_size)
