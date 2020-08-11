@@ -23,7 +23,11 @@ class SelfAttention(nn.Module):
         # split embedding into self. head pieces
         values = values.reshape(N, value_len, self.heads, self.head_dim)
         keys = keys.reshape(N, key_len, self.heads, self.head_dim)
-        queries = query.reshape(N, query_len, self.heads, self.head_dim) 
+        queries = query.reshape(N, query_len, self.heads, self.head_dim)
+
+        values = self.values(values)
+        keys = self.keys(keys)
+        queries = self.queries(queries)
         
         energy = torch.einsum("nqhd,nkhd->nhqk", [queries, keys])
         # queries shape : (N, query_len, heads, heads_dim)
@@ -95,7 +99,7 @@ class Encoder(nn.Module):
                     dropout=dropout,
                     forward_expansion = forward_expansion
                 )
-            ]
+            for _ in range(num_layers)]
         )
         self.dropout = nn.Dropout(dropout)
     
@@ -162,6 +166,8 @@ class Decoder(nn.Module):
             x = layer(x, enc_out, enc_out, src_mask, trg_mask)
 
         out = self.fc_out(x)
+
+        return out
 
 class Transformer(nn.Module):
     def __init__(
