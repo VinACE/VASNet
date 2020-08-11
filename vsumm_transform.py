@@ -17,7 +17,7 @@ class SelfAttention(nn.Module):
     
     def forward(self, values, keys, query, mask):
         N= query.shape[0]
-        value_len, key_len, query_len = values.shape[1], key.shape[1], query.shape[1]
+        value_len, key_len, query_len = values.shape[1], keys.shape[1], query.shape[1]
 
         # split embedding into self. head pieces
         values = values.reshape(N, value_len, self.heads, self.head_dim)
@@ -157,7 +157,7 @@ class Decoder(nn.Module):
         positions = torch.arange(0, seq_length).expand(N, seq_length).to(self.device)
         x = self.dropout((self.word_embedding(x) + self.position_embedding(positions)))
 
-        for layers in self.layers:
+        for layer in self.layers:
             x = layer(x, enc_out, src_mask, trg_mask)
 
         out = self.fc_out(x)
