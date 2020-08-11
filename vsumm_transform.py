@@ -15,6 +15,7 @@ class SelfAttention(nn.Module):
         self.queries = nn.Linear(self.head_dim, self.head_dim, bias=False)        
         self.fc_out = nn.Linear(heads * self.head_dim, embed_size)
     
+    
     def forward(self, values, keys, query, mask):
         N= query.shape[0]
         value_len, key_len, query_len = values.shape[1], keys.shape[1], query.shape[1]
@@ -226,7 +227,7 @@ class Transformer(nn.Module):
     
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    x = torch.tensor([[1, 5, 6, 4, 3, 9, 5, 2, 0, 0], [1, 8, 7, 3, 4, 5, 6, 7, 2, 0]]).to(
+    x = torch.tensor([[1, 5, 6, 4, 3, 9, 5, 2, 0], [1, 8, 7, 3, 4, 5, 6, 7, 2]]).to(
         device
     )
     trg =  torch.tensor([[1, 7, 4, 3, 5, 9, 2, 0], [1, 5, 6, 2, 4, 7, 6, 2]]).to(device)
