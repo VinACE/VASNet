@@ -43,7 +43,7 @@ class SelfAttention(nn.Module):
 
         out = self.fc_out(out)
 
-        return out, attention
+        return out
 
 
 class TransformerBlock(nn.Module):
@@ -66,7 +66,7 @@ class TransformerBlock(nn.Module):
         x = self.dropout(self.norm1(attention + query))
         forward = self.feed_forward(x)
         out = self.droput(self.norm2(forward + x))
-        return out, attention
+        return out
 
 class Encoder(nn.Module):
     def __init__(
@@ -124,7 +124,7 @@ class DecoderBlock(nn.Module):
         attention = self.attention(x, x, x, trg_mask)  # ENC (n x m) => (n x H)
         query = self.dropout(self.norm(attention + x))
         out = self.transformer_block(value, key, query, src_mask)
-        return out, attention
+        return out
 
     
 class Decoder(nn.Module):
@@ -175,7 +175,7 @@ class Transformer(nn.Module):
         heads=8, 
         dropout=0, 
         device="cuda",
-        max_length=1024
+        max_length=100
     ):
         super(Transformer, self).__init__()
         
