@@ -65,7 +65,7 @@ class TransformerBlock(nn.Module):
 
         x = self.dropout(self.norm1(attention + query))
         forward = self.feed_forward(x)
-        out = self.droput(self.norm2(forward + x))
+        out = self.dropout(self.norm2(forward + x))
         return out
 
 class Encoder(nn.Module):
