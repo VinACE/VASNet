@@ -159,7 +159,7 @@ class Decoder(nn.Module):
         x = self.dropout((self.word_embedding(x) + self.position_embedding(positions)))
 
         for layer in self.layers:
-            x = layer(x, enc_out, src_mask, trg_mask)
+            x = layer(x, enc_out, enc_out, src_mask, trg_mask)
 
         out = self.fc_out(x)
 
