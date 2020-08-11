@@ -15,9 +15,9 @@ class SelfAttention(nn.Module):
         self.queries = nn.Linear(self.head_dim, self.head_dim, bias=False)        
         self.fc_out = nn.Linear(heads * self.head_dim, embed_size)
     
-    
+
     def forward(self, values, keys, query, mask):
-        N= query.shape[0]
+        N = query.shape[0]
         value_len, key_len, query_len = values.shape[1], keys.shape[1], query.shape[1]
 
         # split embedding into self. head pieces
@@ -121,7 +121,7 @@ class DecoderBlock(nn.Module):
 
         self.dropout = nn.Dropout(dropout)
 
-    def forward(self, value, key, src_mask, trg_mask):  # x  & V & K are comming in from the encoder..
+    def forward(self, x, value, key, src_mask, trg_mask):  # x  & V & K are comming in from the encoder..
         attention = self.attention(x, x, x, trg_mask)  # ENC (n x m) => (n x H)
         query = self.dropout(self.norm(attention + x))
         out = self.transformer_block(value, key, query, src_mask)
