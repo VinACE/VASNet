@@ -35,6 +35,11 @@ class SelfAttention(nn.Module):
         values = self.values(values)
         keys = self.keys(keys)
         queries = self.queries(queries)
+
+        batch_size, query_len, d_model = queries.size()
+        
+        batch_size, key_len, d_model = keys.size()
+        batch_size, value_len, d_model = values.size()
         
         energy = torch.einsum("nqhd,nkhd->nhqk", [queries, keys])
         # queries shape : (N, query_len, heads, heads_dim)
@@ -55,10 +60,7 @@ class SelfAttention(nn.Module):
 
         out = self.fc_out(out)
 
-        batch_size, query_len, d_model = queries.size()
-        
-        batch_size, key_len, d_model = keys.size()
-        batch_size, value_len, d_model = values.size()
+
 
         
         query_heads = queries.view(batch_size, query_len, self.heads_count, self.head_dim).transpose(1, 2)  # (batch_size, heads_count, query_len, d_head)
