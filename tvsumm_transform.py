@@ -19,6 +19,8 @@ class SelfAttention(nn.Module):
         self.queries = nn.Linear(self.head_dim, self.head_dim, bias=False)        
         self.fc_out = nn.Linear(heads * self.head_dim, embed_size)
     
+    
+    
 
     def forward(self, values, keys, query, mask):
         N = query.shape[0]
@@ -52,9 +54,33 @@ class SelfAttention(nn.Module):
 
         out = self.fc_out(out)
 
+        batch_size, query_len, d_model = queries.size()
+
+        
+        query_heads = query_projected.view(batch_size, query_len, self.heads_count, d_head).transpose(1, 2)  # (batch_size, heads_count, query_len, d_head)
+        # print('query_heads', query_heads.shape)
+        # print(batch_size, key_len, self.heads_count, d_head)
+        # print(key_projected.shape)
+        key_heads = key_projected.view(batch_size, key_len, self.heads_count, d_head).transpose(1, 2)  # (batch_size, heads_count, key_len, d_head)
+        value_heads = value_projected.view(batch_size, value_len, self.heads_count, d_head).transpose(1, 2)  # (batch_size, heads_count, value_len, d_head)
+
+        attention_weights = self.scaled_dot_product(query_heads, key_heads)  # (batch_size, heads_count, query_len, key_len)
+
+
         return out
 
+    def scaled_dot_product(self, query_heads, key_heads):
+        """
+        Args:
+             query_heads: (batch_size, heads_count, query_len, d_head)
+             key_heads: (batch_size, heads_count, key_len, d_head)
+        """
+        key_heads_transposed = key_heads.transpose(2, 3)
+        dot_product = torch.matmul(query_heads, key_heads_transposed)  # (batch_size, heads_count, query_len, key_len)
+        attention_weights = dot_product / np.sqrt(self.d_head)
+        return attention_weights
 
+    
 class TransformerBlock(nn.Module):
     def __init__(self, embed_size, heads, dropout, forward_expansion):
         super(TransformerBlock, self).__init__()
