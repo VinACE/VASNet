@@ -22,40 +22,42 @@ class SelfAttention(nn.Module):
     
 
     def forward(self, values, keys, query, mask):
-        # import pdb;pdb.set_trace()
-        N = query.shape[0]
-        value_len, key_len, query_len = values.shape[1], keys.shape[1], query.shape[1]
+        try:
+            # import pdb;pdb.set_trace()
+            N = query.shape[0]
+            value_len, key_len, query_len = values.shape[1], keys.shape[1], query.shape[1]
 
-        # split embedding into self. head pieces
-        values = values.reshape(N, value_len, self.heads, self.head_dim)
-        keys = keys.reshape(N, key_len, self.heads, self.head_dim)
-        queries = query.reshape(N, query_len, self.heads, self.head_dim)
+            # split embedding into self. head pieces
+            values = values.reshape(N, value_len, self.heads, self.head_dim)
+            keys = keys.reshape(N, key_len, self.heads, self.head_dim)
+            queries = query.reshape(N, query_len, self.heads, self.head_dim)
 
-        values = self.values(values)
-        keys = self.keys(keys)
-        queries = self.queries(queries)
-        
-        energy = torch.einsum("nqhd,nkhd->nhqk", [queries, keys])
-        # queries shape : (N, query_len, heads, heads_dim)
-        # keyshape shape : (N, key_len, heads, heads_dim)
-        # energy shape : (N, heads, query_len, key_len)
+            values = self.values(values)
+            keys = self.keys(keys)
+            queries = self.queries(queries)
+            
+            energy = torch.einsum("nqhd,nkhd->nhqk", [queries, keys])
+            # queries shape : (N, query_len, heads, heads_dim)
+            # keyshape shape : (N, key_len, heads, heads_dim)
+            # energy shape : (N, heads, query_len, key_len)
 
-        if mask is not None:
-            energy =  energy.masked_fill(mask == 0, float("-1e20")) # for numerical stability
-        
-        attention = torch.softmax(energy / (self.embed_size ** (1/2)), dim=3) # Attention(Q,K,V) = sofmax(QK^{T}/(d_{k})**(1/2)) * V
+            if mask is not None:
+                energy =  energy.masked_fill(mask == 0, float("-1e20")) # for numerical stability
+            
+            attention = torch.softmax(energy / (self.embed_size ** (1/2)), dim=3) # Attention(Q,K,V) = sofmax(QK^{T}/(d_{k})**(1/2)) * V
 
-        out = torch.einsum("nhql,nlhd->nqhd", [attention, values]).reshape(
-            N, query_len, self.heads * self.head_dim
-        )
-        # Attention shape: (N, heads, query_len, key_len)
-        # value shape: (N, Value_len, heads, heads_dim) key length and the value lenth are alwasy going to be the same.
-        # after einsum (N, query_len, heads, head_dim) flatten last two dimension..
+            out = torch.einsum("nhql,nlhd->nqhd", [attention, values]).reshape(
+                N, query_len, self.heads * self.head_dim
+            )
+            # Attention shape: (N, heads, query_len, key_len)
+            # value shape: (N, Value_len, heads, heads_dim) key length and the value lenth are alwasy going to be the same.
+            # after einsum (N, query_len, heads, head_dim) flatten last two dimension..
 
-        out = self.fc_out(out)
+            out = self.fc_out(out)
 
-        return out
-
+            return out
+        except:
+            pass
 
 class TransformerBlock(nn.Module):
     def __init__(self, embed_size, heads, dropout, forward_expansion):
