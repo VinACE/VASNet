@@ -1,11 +1,9 @@
 """
 # TODO Multihead implementation https://github.com/dreamgonfly/Transformer-pytorch/blob/master/models.py
-https://buomsoo-kim.github.io/attention/2020/04/27/Attention-mechanism-21.md/
 """
 
 import torch
 import torch.nn as nn
-import numpy as np
 
 class SelfAttention(nn.Module):
     def __init__(self, embed_size, heads ): #  heads=8
@@ -21,6 +19,7 @@ class SelfAttention(nn.Module):
         self.queries = nn.Linear(self.head_dim, self.head_dim, bias=False)        
         self.fc_out = nn.Linear(heads * self.head_dim, embed_size)
     
+
     def forward(self, values, keys, query, mask):
         N = query.shape[0]
         value_len, key_len, query_len = values.shape[1], keys.shape[1], query.shape[1]
@@ -33,12 +32,6 @@ class SelfAttention(nn.Module):
         values = self.values(values)
         keys = self.keys(keys)
         queries = self.queries(queries)
-        # batch_size = N
-
-        # batch_size, query_len, d_model = queries.size()
-        
-        # batch_size, key_len, d_model = keys.size()
-        # batch_size, value_len, d_model = values.size()
         
         energy = torch.einsum("nqhd,nkhd->nhqk", [queries, keys])
         # queries shape : (N, query_len, heads, heads_dim)
@@ -57,31 +50,11 @@ class SelfAttention(nn.Module):
         # value shape: (N, Value_len, heads, heads_dim) key length and the value lenth are alwasy going to be the same.
         # after einsum (N, query_len, heads, head_dim) flatten last two dimension..
 
-        # query_heads = queries.view(batch_size, query_len, self.heads, self.head_dim).transpose(1, 2)  # (batch_size, heads_count, query_len, d_head)
-        # # print('query_heads', query_heads.shape)
-        # # print(batch_size, key_len, self.heads_count, d_head)
-        # # print(key_projected.shape)
-
-        # key_heads = keys.view(batch_size, key_len, self.heads, self.head_dim).transpose(1, 2)  # (batch_size, heads_count, key_len, d_head)
-        # # value_heads = values.view(batch_size, value_len, self.heads, self.head_dim).transpose(1, 2)  # (batch_size, heads_count, value_len, d_head)
-
-        # attention_weights = self.scaled_dot_product(query_heads, key_heads)  # (batch_size, heads_count, query_len, key_len)
         out = self.fc_out(out)
 
         return out
-    """
-    def scaled_dot_product(self, query_heads, key_heads):
-        
-        # Args:
-        #      query_heads: (batch_size, heads_count, query_len, d_head)
-        #      key_heads: (batch_size, heads_count, key_len, d_head)
-        
-        key_heads_transposed = key_heads.transpose(2, 3)
-        dot_product = torch.matmul(query_heads, key_heads_transposed)  # (batch_size, heads_count, query_len, key_len)
-        attention_weights = dot_product / np.sqrt(self.head_dim)
-        return attention_weights
-    """
-    
+
+
 class TransformerBlock(nn.Module):
     def __init__(self, embed_size, heads, dropout, forward_expansion):
         super(TransformerBlock, self).__init__()
@@ -97,12 +70,12 @@ class TransformerBlock(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, value, key, query, mask):
-        attention, weights = self.attention(value, key, query, mask)
+        attention = self.attention(value, key, query, mask)
 
         x = self.dropout(self.norm1(attention + query))
         forward = self.feed_forward(x)
         out = self.dropout(self.norm2(forward + x))
-        return out, weights
+        return out
 
 class Encoder(nn.Module):
     def __init__(
@@ -139,12 +112,11 @@ class Encoder(nn.Module):
         positions = torch.arange(0, seq_length).expand(N, seq_length).to(self.device)
         
         out = self.dropout(self.word_embedding(x) + self.position_embedding(positions)) ## Need to understand what is positions..
-        weights = []
+
         for layers in self.layers:
-            out, weight = layers(out, out, out, mask)
-            weights.append(weight)
+            out = layers(out, out, out, mask)
         
-        return out, weights # should we return the weights in Encoder.. or is it ok only to return on the Decoder part...
+        return out  # should we return the weights in Encoder.. or is it ok only to return on the Decoder part...
     
 class DecoderBlock(nn.Module):
     def __init__(self, embed_size, heads, forward_expansion, dropout, device):
@@ -259,9 +231,9 @@ class Transformer(nn.Module):
     def forward(self, src, trg):
         src_mask = self.make_src_mask(src)
         trg_mask = self.make_trg_mask(trg)
-        enc_src, w = self.encoder(src, src_mask)
+        enc_src = self.encoder(src, src_mask)
         out = self.decoder(trg, enc_src, src_mask, trg_mask)
-        return out,w
+        return out
     
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
