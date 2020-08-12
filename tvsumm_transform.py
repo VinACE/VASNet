@@ -59,11 +59,6 @@ class SelfAttention(nn.Module):
         # value shape: (N, Value_len, heads, heads_dim) key length and the value lenth are alwasy going to be the same.
         # after einsum (N, query_len, heads, head_dim) flatten last two dimension..
 
-        out = self.fc_out(out)
-
-
-
-        
         query_heads = queries.view(batch_size, query_len, self.heads, self.head_dim).transpose(1, 2)  # (batch_size, heads_count, query_len, d_head)
         # print('query_heads', query_heads.shape)
         # print(batch_size, key_len, self.heads_count, d_head)
@@ -73,7 +68,7 @@ class SelfAttention(nn.Module):
         # value_heads = values.view(batch_size, value_len, self.heads, self.head_dim).transpose(1, 2)  # (batch_size, heads_count, value_len, d_head)
 
         attention_weights = self.scaled_dot_product(query_heads, key_heads)  # (batch_size, heads_count, query_len, key_len)
-
+        out = self.fc_out(out)
 
         return out, attention_weights
 
