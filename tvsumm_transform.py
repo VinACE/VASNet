@@ -31,8 +31,8 @@ class SelfAttention(nn.Module):
         queries = query.reshape(N, query_len, self.heads, self.head_dim)
 
         values = self.values(values)
-        keys = self.keys(keys)
-        queries = self.queries(queries)
+        keys = self.keys(values)
+        queries = self.queries(values)
         
 
         queries *= 0.06
