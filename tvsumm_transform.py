@@ -85,7 +85,7 @@ class SelfAttention(nn.Module):
         """
         key_heads_transposed = key_heads.transpose(2, 3)
         dot_product = torch.matmul(query_heads, key_heads_transposed)  # (batch_size, heads_count, query_len, key_len)
-        attention_weights = dot_product / np.sqrt(self.d_head)
+        attention_weights = dot_product / np.sqrt(self.head_dim)
         return attention_weights
 
     
