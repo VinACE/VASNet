@@ -1,5 +1,6 @@
 """
 # TODO Multihead implementation https://github.com/dreamgonfly/Transformer-pytorch/blob/master/models.py
+https://buomsoo-kim.github.io/attention/2020/04/27/Attention-mechanism-21.md/
 """
 
 import torch
