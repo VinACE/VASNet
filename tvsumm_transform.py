@@ -21,7 +21,7 @@ class SelfAttention(nn.Module):
     
 
     def forward(self, values, keys, query, mask):
-        import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
         N = query.shape[0]
         value_len, key_len, query_len = values.shape[1], keys.shape[1], query.shape[1]
 
