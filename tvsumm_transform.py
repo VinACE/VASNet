@@ -70,12 +70,12 @@ class TransformerBlock(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, value, key, query, mask):
-        attention = self.attention(value, key, query, mask)
+        attention, weights = self.attention(value, key, query, mask)
 
         x = self.dropout(self.norm1(attention + query))
         forward = self.feed_forward(x)
         out = self.dropout(self.norm2(forward + x))
-        return out
+        return out, weights
 
 class Encoder(nn.Module):
     def __init__(
@@ -112,11 +112,13 @@ class Encoder(nn.Module):
         positions = torch.arange(0, seq_length).expand(N, seq_length).to(self.device)
         
         out = self.dropout(self.word_embedding(x) + self.position_embedding(positions)) ## Need to understand what is positions..
-
+        weights = []
         for layers in self.layers:
-            out = layers(out, out, out, mask)
-        
-        return out  # should we return the weights in Encoder.. or is it ok only to return on the Decoder part...
+            out, weight = layers(out, out, out, mask)
+            weights.append(weight)
+
+
+        return out, weights  # should we return the weights in Encoder.. or is it ok only to return on the Decoder part...
     
 class DecoderBlock(nn.Module):
     def __init__(self, embed_size, heads, forward_expansion, dropout, device):
