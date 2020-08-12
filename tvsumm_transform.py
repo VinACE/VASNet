@@ -19,6 +19,16 @@ class SelfAttention(nn.Module):
         self.queries = nn.Linear(self.head_dim, self.head_dim, bias=False)        
         self.fc_out = nn.Linear(heads * self.head_dim, embed_size)
     
+    def scaled_dot_product(self, query_heads, key_heads):
+        """
+        Args:
+             query_heads: (batch_size, heads_count, query_len, d_head)
+             key_heads: (batch_size, heads_count, key_len, d_head)
+        """
+        key_heads_transposed = key_heads.transpose(2, 3)
+        dot_product = torch.matmul(query_heads, key_heads_transposed)  # (batch_size, heads_count, query_len, key_len)
+        attention_weights = dot_product / np.sqrt(self.d_head)
+        return attention_weights
 
     def forward(self, values, keys, query, mask):
         N = query.shape[0]
