@@ -64,7 +64,7 @@ class SelfAttention(nn.Module):
 
 
         
-        query_heads = queries.view(batch_size, query_len, self.heads_count, self.head_dim).transpose(1, 2)  # (batch_size, heads_count, query_len, d_head)
+        query_heads = queries.view(batch_size, query_len, self.heads, self.head_dim).transpose(1, 2)  # (batch_size, heads_count, query_len, d_head)
         # print('query_heads', query_heads.shape)
         # print(batch_size, key_len, self.heads_count, d_head)
         # print(key_projected.shape)
