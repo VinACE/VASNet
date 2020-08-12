@@ -4,6 +4,7 @@
 
 import torch
 import torch.nn as nn
+import numpy as np
 
 class SelfAttention(nn.Module):
     def __init__(self, embed_size, heads ): #  heads=8
@@ -19,21 +20,8 @@ class SelfAttention(nn.Module):
         self.queries = nn.Linear(self.head_dim, self.head_dim, bias=False)        
         self.fc_out = nn.Linear(heads * self.head_dim, embed_size)
     
-<<<<<<< HEAD
-    def scaled_dot_product(self, query_heads, key_heads):
-        """
-        Args:
-             query_heads: (batch_size, heads_count, query_len, d_head)
-             key_heads: (batch_size, heads_count, key_len, d_head)
-        """
-        key_heads_transposed = key_heads.transpose(2, 3)
-        dot_product = torch.matmul(query_heads, key_heads_transposed)  # (batch_size, heads_count, query_len, key_len)
-        attention_weights = dot_product / np.sqrt(self.d_head)
-        return attention_weights
-=======
     
     
->>>>>>> ecec381d74bcb3c9b11bfb0302340c363f4b0240
 
     def forward(self, values, keys, query, mask):
         N = query.shape[0]
@@ -68,19 +56,23 @@ class SelfAttention(nn.Module):
         out = self.fc_out(out)
 
         batch_size, query_len, d_model = queries.size()
+        
+        batch_size, key_len, d_model = keys.size()
+        batch_size, value_len, d_model = values.size()
 
         
-        query_heads = query_projected.view(batch_size, query_len, self.heads_count, d_head).transpose(1, 2)  # (batch_size, heads_count, query_len, d_head)
+        query_heads = queries.view(batch_size, query_len, self.heads_count, self.head_dim).transpose(1, 2)  # (batch_size, heads_count, query_len, d_head)
         # print('query_heads', query_heads.shape)
         # print(batch_size, key_len, self.heads_count, d_head)
         # print(key_projected.shape)
-        key_heads = key_projected.view(batch_size, key_len, self.heads_count, d_head).transpose(1, 2)  # (batch_size, heads_count, key_len, d_head)
-        value_heads = value_projected.view(batch_size, value_len, self.heads_count, d_head).transpose(1, 2)  # (batch_size, heads_count, value_len, d_head)
+
+        key_heads = keys.view(batch_size, key_len, self.heads_count, self.head_dim).transpose(1, 2)  # (batch_size, heads_count, key_len, d_head)
+        # value_heads = values.view(batch_size, value_len, self.heads_count, self.head_dim).transpose(1, 2)  # (batch_size, heads_count, value_len, d_head)
 
         attention_weights = self.scaled_dot_product(query_heads, key_heads)  # (batch_size, heads_count, query_len, key_len)
 
 
-        return out
+        return out, attention_weights
 
     def scaled_dot_product(self, query_heads, key_heads):
         """
