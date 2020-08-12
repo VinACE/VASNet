@@ -80,7 +80,7 @@ class TransformerBlock(nn.Module):
         x = self.dropout(self.norm1(attention + query))
         forward = self.feed_forward(x)
         out = self.dropout(self.norm2(forward + x))
-        return out, weights
+        yield out, weights
 
 class Encoder(nn.Module):
     def __init__(
@@ -123,7 +123,7 @@ class Encoder(nn.Module):
             weights_.append(weight)
 
 
-        return out, weights_  # should we return the weights in Encoder.. or is it ok only to return on the Decoder part...
+        yield ( out, weights_ ) # should we return the weights in Encoder.. or is it ok only to return on the Decoder part...
     
 class DecoderBlock(nn.Module):
     def __init__(self, embed_size, heads, forward_expansion, dropout, device):
