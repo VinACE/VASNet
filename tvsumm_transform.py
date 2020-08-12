@@ -27,8 +27,8 @@ class SelfAttention(nn.Module):
 
         # split embedding into self. head pieces
         values = values.reshape(N, value_len, self.heads, self.head_dim)
-        keys = keys.reshape(N, key_len, self.heads, self.head_dim)
-        queries = query.reshape(N, query_len, self.heads, self.head_dim)
+        keys = keys.reshape(N, value_len, self.heads, self.head_dim)
+        queries = query.reshape(N, value_len, self.heads, self.head_dim)
 
         values = self.values(values)
         keys = self.keys(values)
