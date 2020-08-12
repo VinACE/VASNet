@@ -254,4 +254,6 @@ if __name__ == "__main__":
         device
     )
     out, weight_mat = model(x, trg[:, :-1])
-    print(out.shape)
+    print(out)
+    print("**************")
+    print(weight_mat)
