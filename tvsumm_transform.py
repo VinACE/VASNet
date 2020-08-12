@@ -18,6 +18,7 @@ class SelfAttention(nn.Module):
         self.keys = nn.Linear(self.head_dim, self.head_dim, bias=False) 
         self.queries = nn.Linear(self.head_dim, self.head_dim, bias=False)        
         self.fc_out = nn.Linear(heads * self.head_dim, embed_size)
+        self.ignore_itself = False
     
 
     def forward(self, values, keys, query, mask):
@@ -33,6 +34,15 @@ class SelfAttention(nn.Module):
         keys = self.keys(keys)
         queries = self.queries(queries)
         
+
+        queries *= 0.06
+        logits = torch.matmul(queries, keys.transpose(1,0))
+        if self.ignore_itself:
+            # Zero the diagonal activations (a distance of each frame with itself)
+            logits[torch.eye(N).byte()] = -float("Inf")
+        
+
+
         energy = torch.einsum("nqhd,nkhd->nhqk", [queries, keys])
         # queries shape : (N, query_len, heads, heads_dim)
         # keyshape shape : (N, key_len, heads, heads_dim)
@@ -42,6 +52,7 @@ class SelfAttention(nn.Module):
             energy =  energy.masked_fill(mask == 0, float("-1e20")) # for numerical stability
         
         attention = torch.softmax(energy / (self.embed_size ** (1/2)), dim=3) # Attention(Q,K,V) = sofmax(QK^{T}/(d_{k})**(1/2)) * V
+        att_weights_ = nn.functional.softmax(logits, dim=-1)
 
         out = torch.einsum("nhql,nlhd->nqhd", [attention, values]).reshape(
             N, query_len, self.heads * self.head_dim
@@ -52,7 +63,7 @@ class SelfAttention(nn.Module):
 
         out = self.fc_out(out)
 
-        return out, attention
+        return out, att_weights_
 
 
 class TransformerBlock(nn.Module):
