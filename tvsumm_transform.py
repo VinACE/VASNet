@@ -1,5 +1,5 @@
 """
-Attention weights, https://github.com/dreamgonfly/Transformer-pytorch/blob/master/models.py
+# TODO Multihead implementation https://github.com/dreamgonfly/Transformer-pytorch/blob/master/models.py
 """
 
 import torch
@@ -18,7 +18,6 @@ class SelfAttention(nn.Module):
         self.keys = nn.Linear(self.head_dim, self.head_dim, bias=False) 
         self.queries = nn.Linear(self.head_dim, self.head_dim, bias=False)        
         self.fc_out = nn.Linear(heads * self.head_dim, embed_size)
-        self.ignore_itself = False
     
 
     def forward(self, values, keys, query, mask):
@@ -27,22 +26,13 @@ class SelfAttention(nn.Module):
 
         # split embedding into self. head pieces
         values = values.reshape(N, value_len, self.heads, self.head_dim)
-        keys = keys.reshape(N, value_len, self.heads, self.head_dim)
-        queries = query.reshape(N, value_len, self.heads, self.head_dim)
+        keys = keys.reshape(N, key_len, self.heads, self.head_dim)
+        queries = query.reshape(N, query_len, self.heads, self.head_dim)
 
         values = self.values(values)
-        keys = self.keys(values)
-        queries = self.queries(values)
+        keys = self.keys(keys)
+        queries = self.queries(queries)
         
-
-        queries *= 0.06
-        logits = torch.matmul(queries, keys.transpose(1,0))
-        if self.ignore_itself:
-            # Zero the diagonal activations (a distance of each frame with itself)
-            logits[torch.eye(N).byte()] = -float("Inf")
-        
-
-
         energy = torch.einsum("nqhd,nkhd->nhqk", [queries, keys])
         # queries shape : (N, query_len, heads, heads_dim)
         # keyshape shape : (N, key_len, heads, heads_dim)
@@ -52,7 +42,6 @@ class SelfAttention(nn.Module):
             energy =  energy.masked_fill(mask == 0, float("-1e20")) # for numerical stability
         
         attention = torch.softmax(energy / (self.embed_size ** (1/2)), dim=3) # Attention(Q,K,V) = sofmax(QK^{T}/(d_{k})**(1/2)) * V
-        att_weights_ = nn.functional.softmax(logits, dim=-1)
 
         out = torch.einsum("nhql,nlhd->nqhd", [attention, values]).reshape(
             N, query_len, self.heads * self.head_dim
@@ -63,7 +52,7 @@ class SelfAttention(nn.Module):
 
         out = self.fc_out(out)
 
-        return out, att_weights_
+        return out
 
 
 class TransformerBlock(nn.Module):
@@ -86,7 +75,7 @@ class TransformerBlock(nn.Module):
         x = self.dropout(self.norm1(attention + query))
         forward = self.feed_forward(x)
         out = self.dropout(self.norm2(forward + x))
-        return out, attention
+        return out
 
 class Encoder(nn.Module):
     def __init__(
@@ -144,7 +133,7 @@ class DecoderBlock(nn.Module):
         attention = self.attention(x, x, x, trg_mask)  # ENC (n x m) => (n x H)
         query = self.dropout(self.norm(attention + x))
         out = self.transformer_block(value, key, query, src_mask)
-        return out, attention
+        return out
 
     
 class Decoder(nn.Module):
@@ -244,7 +233,7 @@ class Transformer(nn.Module):
         trg_mask = self.make_trg_mask(trg)
         enc_src = self.encoder(src, src_mask)
         out = self.decoder(trg, enc_src, src_mask, trg_mask)
-        return out, attention
+        return out
     
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
