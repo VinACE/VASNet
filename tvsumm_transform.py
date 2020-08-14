@@ -72,7 +72,7 @@ class SelfAttention(nn.Module):
             # after einsum (N, query_len, heads, head_dim) flatten last two dimension..
             att_weights_ = nn.functional.softmax(logits, dim=-1)
             weights = self.drop50(att_weights_)
-            
+
             out = self.fc_out(out)
 
             return out, weights
@@ -268,7 +268,7 @@ if __name__ == "__main__":
     x = torch.tensor([[1, 5, 6, 4, 3, 9, 5, 2, 0], [1, 8, 7, 3, 4, 5, 6, 7, 2]]).to(
         device
     )
-    trg =  torch.tensor([[1, 7, 4, 3, 5, 9, 2, 0], [1, 5, 6, 2, 4, 7, 6, 2]]).to(device)
+    trg =  torch.tensor([[1, 7, 4, 3, 5, 9, 2, 0, 0], [1, 5, 6, 2, 4, 7, 6, 2,0]]).to(device)
 
     src_pad_idx = 0
     trg_pad_idx = 0
