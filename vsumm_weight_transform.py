@@ -176,5 +176,6 @@ if __name__ == "__main__":
     # print(out)
     # print("**************")
     # print(weight_mat_)
+    print(model)
 
     outputs, w = model(x)
