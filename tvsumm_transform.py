@@ -117,13 +117,13 @@ class Encoder(nn.Module):
         positions = torch.arange(0, seq_length).expand(N, seq_length).to(self.device)
         
         out = self.dropout(self.word_embedding(x) + self.position_embedding(positions)) ## Need to understand what is positions..
-        weights_ = []
+        weights = []
         for layers in self.layers:
             out, weight = layers(out, out, out, mask)
-            weights_.append(weight)
+            weights.append(weight)
 
 
-        return out, weights_ # should we return the weights in Encoder.. or is it ok only to return on the Decoder part...
+        return out, weights # should we return the weights in Encoder.. or is it ok only to return on the Decoder part...
     
 class DecoderBlock(nn.Module):
     def __init__(self, embed_size, heads, forward_expansion, dropout, device):
@@ -137,7 +137,7 @@ class DecoderBlock(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x, value, key, src_mask, trg_mask):  # x  & V & K are comming in from the encoder..
-        attention = self.attention(x, x, x, trg_mask)  # ENC (n x m) => (n x H)
+        attention, weights = self.attention(x, x, x, trg_mask)  # ENC (n x m) => (n x H)
         query = self.dropout(self.norm(attention + x))
         out = self.transformer_block(value, key, query, src_mask)
         return out
@@ -258,8 +258,8 @@ if __name__ == "__main__":
     model = Transformer(src_vocab_size, trg_vocab_size, src_pad_idx, trg_pad_idx).to(
         device
     )
-    out = model(x, trg[:, :-1])[0]
+    out, weights = model(x, trg[:, :-1])[0]
     # weight_mat_ = model(x, trg[:, :-1])[1]
-    # print(out)
+    print(out)
     # print("**************")
     # print(weight_mat_)
