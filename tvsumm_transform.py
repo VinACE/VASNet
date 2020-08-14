@@ -44,7 +44,15 @@ class SelfAttention(nn.Module):
             values = self.values(values)
             keys = self.keys(keys)
             queries = self.queries(queries)
+
             
+            queries *= 0.06
+            logits = torch.matmul(queries, keys.transpose(1,0))
+            if self.ignore_itself:
+                # Zero the diagonal activations (a distance of each frame with itself)
+                logits[torch.eye(n).byte()] = -float("Inf")
+            
+
             energy = torch.einsum("nqhd,nkhd->nhqk", [queries, keys])
             # queries shape : (N, query_len, heads, heads_dim)
             # keyshape shape : (N, key_len, heads, heads_dim)
@@ -53,15 +61,18 @@ class SelfAttention(nn.Module):
             if mask is not None:
                 energy =  energy.masked_fill(mask == 0, float("-1e20")) # for numerical stability
             
-            attention, weights= torch.softmax(energy / (self.embed_size ** (1/2)), dim=3) # Attention(Q,K,V) = sofmax(QK^{T}/(d_{k})**(1/2)) * V
+            attention = torch.softmax(energy / (self.embed_size ** (1/2)), dim=3) # Attention(Q,K,V) = sofmax(QK^{T}/(d_{k})**(1/2)) * V
 
             out = torch.einsum("nhql,nlhd->nqhd", [attention, values]).reshape(
                 N, query_len, self.heads * self.head_dim
             )
+
             # Attention shape: (N, heads, query_len, key_len)
             # value shape: (N, Value_len, heads, heads_dim) key length and the value lenth are alwasy going to be the same.
             # after einsum (N, query_len, heads, head_dim) flatten last two dimension..
-
+            att_weights_ = nn.functional.softmax(logits, dim=-1)
+            weights = self.drop50(att_weights_)
+            
             out = self.fc_out(out)
 
             return out, weights
