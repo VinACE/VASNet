@@ -60,8 +60,9 @@ import copy
 
 def _get_clones(module, N):
     return nn.ModuleList([copy.deepcopy(module) for i in range(N)])
+    
 
-class TransformerEncoder(Module):
+class TransformerEncoder(nn.Module):
     __constants__ = ['norm']
     def __init__(self, encoder_layer, num_layers, norm=None):
         super(TransformerEncoder, self).__init__()
