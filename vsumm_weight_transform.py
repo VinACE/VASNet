@@ -165,7 +165,7 @@ if __name__ == "__main__":
     src_vocab_size = 10
     trg_vocab_size = 10
     VOCAB_SIZE = 10
-    NUM_LABELS = 1024
+    NUM_LABELS = 10
     # model = TransformerNet(src_vocab_size, trg_vocab_size, src_pad_idx, trg_pad_idx).to(
     #     device
     # )
