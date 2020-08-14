@@ -19,12 +19,20 @@ class SelfAttention(nn.Module):
         self.keys = nn.Linear(self.head_dim, self.head_dim, bias=False) 
         self.queries = nn.Linear(self.head_dim, self.head_dim, bias=False)        
         self.fc_out = nn.Linear(heads * self.head_dim, embed_size)
+
+        apperture=-1
+        ignore_itself=False
+        self.apperture = apperture
+        self.ignore_itself = ignore_itself
+
+
     
 
     def forward(self, values, keys, query, mask):
         # try:
         #     if query.shape[0] is not None:
         #         # import pdb;pdb.set_trace()
+
             N = query.shape[0]
             value_len, key_len, query_len = values.shape[1], keys.shape[1], query.shape[1]
 
@@ -45,7 +53,7 @@ class SelfAttention(nn.Module):
             if mask is not None:
                 energy =  energy.masked_fill(mask == 0, float("-1e20")) # for numerical stability
             
-            attention = torch.softmax(energy / (self.embed_size ** (1/2)), dim=3) # Attention(Q,K,V) = sofmax(QK^{T}/(d_{k})**(1/2)) * V
+            attention, weights= torch.softmax(energy / (self.embed_size ** (1/2)), dim=3) # Attention(Q,K,V) = sofmax(QK^{T}/(d_{k})**(1/2)) * V
 
             out = torch.einsum("nhql,nlhd->nqhd", [attention, values]).reshape(
                 N, query_len, self.heads * self.head_dim
