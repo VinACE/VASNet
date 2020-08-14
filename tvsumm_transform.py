@@ -119,7 +119,7 @@ class Encoder(nn.Module):
         out = self.dropout(self.word_embedding(x) + self.position_embedding(positions)) ## Need to understand what is positions..
         weights = []
         for layers in self.layers:
-            out, weight = layers(out, out, out, mask)
+            out, weight = layers(out, out, out, mask, attn_mask=mask)
             weights.append(weight)
 
 
@@ -137,7 +137,7 @@ class DecoderBlock(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x, value, key, src_mask, trg_mask):  # x  & V & K are comming in from the encoder..
-        attention, weights = self.attention(x, x, x, trg_mask, attn_mask=src_mask,)  # ENC (n x m) => (n x H)
+        attention, weights = self.attention(x, x, x, trg_mask, attn_mask=src_mask)  # ENC (n x m) => (n x H)
         query = self.dropout(self.norm(attention + x))
         out = self.transformer_block(value, key, query, src_mask)
         return out, weights
