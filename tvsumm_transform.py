@@ -119,7 +119,7 @@ class Encoder(nn.Module):
         out = self.dropout(self.word_embedding(x) + self.position_embedding(positions)) ## Need to understand what is positions..
         weights = []
         for layers in self.layers:
-            out, weight = layers(out, out, out, mask, attn_mask=mask)
+            out, weight = layers(out, out, out, mask)
             weights.append(weight)
 
 
