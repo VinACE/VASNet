@@ -64,7 +64,7 @@ class SelfAttention(nn.Module):
 
             out = self.fc_out(out)
 
-            return out
+            return out, weights
         # except:
         #     pass
 
