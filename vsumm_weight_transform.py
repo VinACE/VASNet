@@ -10,7 +10,7 @@ import sys
 VOCAB_SIZE = 1024
 NUM_EPOCHS = 10
 HIDDEN_SIZE = 16
-EMBEDDING_DIM = 1024
+EMBEDDING_DIM = 256
 BATCH_SIZE = 128
 NUM_HEADS = 3
 NUM_LAYERS = 3
@@ -152,7 +152,7 @@ print(w[0].shape)
 """
 
 if __name__ == "__main__":
-    import pdb;pdb.set_trace()
+    # import pdb;pdb.set_trace()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # device = torch.device("cpu")
     x = torch.tensor([[1, 5, 6, 4, 3, 9, 5, 2, 0], [1, 8, 7, 3, 4, 5, 6, 7, 2]]).to(
