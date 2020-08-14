@@ -1,5 +1,11 @@
 import torch
+import torchvision  
 import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+import numpy as np
+import matplotlib.pyplot as plt
+import sys  
 # VOCAB_SIZE = len(unique_tokens)
 VOCAB_SIZE = 1024
 NUM_EPOCHS = 10
@@ -60,7 +66,7 @@ import copy
 
 def _get_clones(module, N):
     return nn.ModuleList([copy.deepcopy(module) for i in range(N)])
-    
+
 
 class TransformerEncoder(nn.Module):
     __constants__ = ['norm']
