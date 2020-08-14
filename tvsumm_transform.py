@@ -123,7 +123,7 @@ class Encoder(nn.Module):
             weights_.append(weight)
 
 
-        yield ( out, weights_ ) # should we return the weights in Encoder.. or is it ok only to return on the Decoder part...
+        return out, weights_ # should we return the weights in Encoder.. or is it ok only to return on the Decoder part...
     
 class DecoderBlock(nn.Module):
     def __init__(self, embed_size, heads, forward_expansion, dropout, device):
