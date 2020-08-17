@@ -471,3 +471,4 @@ if __name__ == "__main__":
     )
     out, attention = model(x, trg[:, :-1])
     print(out.shape)
+    print(attention.shape)
