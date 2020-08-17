@@ -30,22 +30,23 @@ class SelfAttention(nn.Module):
         self.apperture = apperture
         self.ignore_itself = ignore_itself
 
-    def forward(self, x):
+    def forward(self, x, mask):
         # try:
         #     if query.shape[0] is not None:
         #         # import pdb;pdb.set_trace()
-
+            mask = None
             N = x.shape[0]
             value_len, key_len, query_len = x.shape[1], x.shape[1], x.shape[1]
+            values.shape[1], keys.shape[1], query.shape[1]
 
             # split embedding into self. head pieces
-            values = values.reshape(N, value_len, self.heads, self.head_dim)
-            keys = keys.reshape(N, key_len, self.heads, self.head_dim)
-            queries = query.reshape(N, query_len, self.heads, self.head_dim)
+            # values = values.reshape(N, value_len, self.heads, self.head_dim)
+            # keys = keys.reshape(N, key_len, self.heads, self.head_dim)
+            # queries = query.reshape(N, query_len, self.heads, self.head_dim)
 
-            values = self.values(values)
-            keys = self.keys(keys)
-            queries = self.queries(query)
+            # values = self.values(values)
+            # keys = self.keys(keys)
+            # queries = self.queries(query)
             
             queries *= 0.06
             logits = torch.matmul(queries, keys.transpose(1,0))
