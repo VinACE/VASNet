@@ -30,13 +30,13 @@ class SelfAttention(nn.Module):
         self.apperture = apperture
         self.ignore_itself = ignore_itself
 
-    def forward(self, values, keys, query, mask):
+    def forward(self, x):
         # try:
         #     if query.shape[0] is not None:
         #         # import pdb;pdb.set_trace()
 
-            N = query.shape[0]
-            value_len, key_len, query_len = values.shape[1], keys.shape[1], query.shape[1]
+            N = x.shape[0]
+            value_len, key_len, query_len = x.shape[1], x.shape[1], x.shape[1]
 
             # split embedding into self. head pieces
             # values = values.reshape(N, value_len, self.heads, self.head_dim)
