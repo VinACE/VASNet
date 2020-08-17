@@ -30,7 +30,7 @@ class SelfAttention(nn.Module):
         self.apperture = apperture
         self.ignore_itself = ignore_itself
 
-    def forward(self, x, mask):
+    def forward(self, values, keys, query, mask):
         N = x.shape[0]
         # try:
         #     if query.shape[0] is not None:
