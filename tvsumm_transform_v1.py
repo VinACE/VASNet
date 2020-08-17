@@ -15,10 +15,9 @@ class SelfAttention(nn.Module):
         self.embed_size = embed_size
         self.heads = heads
         self.head_dim = embed_size // heads
-        input_size=10, output_size=10
-        self.m = input_size
-        self.output_size = output_size
-        
+        self.input_size=10
+        self.output_size=10
+        self.m = self.input_size        
         assert (self.head_dim * heads == embed_size), "Embed size needs to be divisible by head size"
 
         self.values = nn.Linear(in_features=self.m, out_features=self.output_size, bias=False)
