@@ -10,18 +10,20 @@ import torch
 import torch.nn as nn
 
 class SelfAttention(nn.Module):
-    def __init__(self, embed_size, heads ): #  heads=8
+    def __init__(self, embed_size, heads, input_size=1024, output_size=1024 ): #  heads=8
         super(SelfAttention, self).__init__()
         self.embed_size = embed_size
         self.heads = heads
         self.head_dim = embed_size // heads
+        self.m = input_size
+        self.output_size = output_size
 
         assert (self.head_dim * heads == embed_size), "Embed size needs to be divisible by head size"
 
-        self.values = nn.Linear(self.head_dim, self.head_dim, bias=False)
-        self.keys = nn.Linear(self.head_dim, self.head_dim, bias=False) 
-        self.queries = nn.Linear(self.head_dim, self.head_dim, bias=False)        
-        self.fc_out = nn.Linear(heads * self.head_dim, embed_size)
+        self.values = nn.Linear(in_features=self.m, out_features=self.output_size, bias=False)
+        self.keys = nn.Linear(in_features=self.m, out_features=self.output_size, bias=False) 
+        self.queries = nn.Linear(in_features=self.m, out_features=self.output_size, bias=False)        
+        self.fc_out = nn.Linear(in_features=self.output_size, out_features=self.m, bias=False)
 
         apperture=-1
         ignore_itself=False
