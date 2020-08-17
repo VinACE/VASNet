@@ -194,7 +194,7 @@ class Decoder(nn.Module):    ## DECODER BLOCK
 
         out = self.fc_out(x)
 
-        return out, weights
+        return out, attention
 
 class Transformer(nn.Module):
     def __init__(
