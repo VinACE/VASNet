@@ -144,7 +144,7 @@ class DecoderBlock(nn.Module):
         attention = self.attention(x, x, x, trg_mask)  # ENC (n x m) => (n x H)
         query = self.dropout(self.norm(attention + x))
         out = self.transformer_block(value, key, query, src_mask)
-        
+
         return out
 
     
@@ -262,5 +262,5 @@ if __name__ == "__main__":
     model = Transformer(src_vocab_size, trg_vocab_size, src_pad_idx, trg_pad_idx).to(
         device
     )
-    out = model(x, trg[:, :-1])
+    out, attention = model(x, trg[:, :-1])
     print(out.shape)
