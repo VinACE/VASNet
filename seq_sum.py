@@ -20,6 +20,7 @@ import time
 ######## ENCODER PART #################################
 
 class Encoder(nn.Module):
+    import pdb;pdb.set_trace()
     def __init__(self, 
                  input_dim, 
                  hid_dim, 
@@ -71,6 +72,7 @@ class Encoder(nn.Module):
         return src
 
 class EncoderLayer(nn.Module):
+    import pdb;pdb.set_trace()
     def __init__(self, 
                  hid_dim, 
                  n_heads, 
