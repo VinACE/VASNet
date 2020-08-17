@@ -431,8 +431,8 @@ if __name__ == "__main__":
     ENC_DROPOUT = 0.1
     DEC_DROPOUT = 0.1
 
-    SRC_PAD_IDX
-    TRG_PAD_IDX
+    SRC_PAD_IDX = 0
+    TRG_PAD_IDX = 0
 
     enc = Encoder(INPUT_DIM, 
                 HID_DIM, 
@@ -450,7 +450,9 @@ if __name__ == "__main__":
                 DEC_DROPOUT, 
                 device)
 
-    model = Seq2Seq(enc, dec, SRC_PAD_IDX, TRG_PAD_IDX, device).to(device)
+    src_vocab_size = 10
+    trg_vocab_size = 10
+    # model = Seq2Seq(enc, dec, SRC_PAD_IDX, TRG_PAD_IDX, device).to(device)
 
 
     #     out, attention = model(x, trg[:, :-1])
@@ -464,7 +466,7 @@ if __name__ == "__main__":
 
 
 
-    model = Seq2Seq(src_vocab_size, trg_vocab_size, src_pad_idx, trg_pad_idx).to(
+    model = Seq2Seq(src_vocab_size, trg_vocab_size, SRC_PAD_IDX, TRG_PAD_IDX, device).to(
         device
     )
     out, attention = model(x, trg[:, :-1])
