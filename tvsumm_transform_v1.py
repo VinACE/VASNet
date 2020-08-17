@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 
 class SelfAttention(nn.Module):
-    def __init__(self, embed_size, heads, input_size=1024, output_size=1024 ): #  heads=8
+    def __init__(self, embed_size, heads, input_size=10, output_size=10 ): #  heads=8
         super(SelfAttention, self).__init__()
         self.embed_size = embed_size
         self.heads = heads
@@ -46,7 +46,6 @@ class SelfAttention(nn.Module):
             values = self.values(values)
             keys = self.keys(keys)
             queries = self.queries(query)
-
             
             queries *= 0.06
             logits = torch.matmul(queries, keys.transpose(1,0))
@@ -267,7 +266,7 @@ if __name__ == "__main__":
     x = torch.tensor([[1, 5, 6, 4, 3, 9, 5, 2, 0], [1, 8, 7, 3, 4, 5, 6, 7, 2]]).to(
         device
     )
-    trg =  torch.tensor([[1, 7, 4, 3, 5, 9, 2, 0, 0], [1, 5, 6, 2, 4, 7, 6, 2,0]]).to(device)
+    trg =  torch.tensor([[1, 7, 4, 3, 5, 9, 2, 0, 0,0], [1, 5, 6, 2, 4, 7, 6, 2,0,0]]).to(device)
 
     src_pad_idx = 0
     trg_pad_idx = 0
