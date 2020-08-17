@@ -14,7 +14,7 @@ class SelfAttention(nn.Module):
         super(SelfAttention, self).__init__()
         self.embed_size = embed_size
         self.heads = heads
-        self.head_dim = embed_size // heads.
+        self.head_dim = embed_size // heads
         input_size=10, output_size=10
         self.m = input_size
         self.output_size = output_size
