@@ -194,7 +194,7 @@ class Decoder(nn.Module):    ## DECODER BLOCK
 
         out = self.fc_out(x)
 
-        return out, attention
+        return out, weights
 
 class Transformer(nn.Module):
     def __init__(
@@ -274,7 +274,7 @@ if __name__ == "__main__":
     model = Transformer(src_vocab_size, trg_vocab_size, src_pad_idx, trg_pad_idx).to(
         device
     )
-    out, weights = model(x, trg[:, :-1])[0]
+    out, weights = model(x, trg[:, :-1])
     # weight_mat_ = model(x, trg[:, :-1])[1]
     print(out)
     # print("**************")
