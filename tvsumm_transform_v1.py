@@ -4,6 +4,17 @@
 
 import torch
 import torch.nn as nn
+import torch.optim as optim
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+
+import spacy
+import numpy as np
+
+import random
+import math
+import time
+
 
 class SelfAttention(nn.Module):
     def __init__(self, embed_size, heads ): #  heads=8
@@ -133,6 +144,7 @@ class DecoderBlock(nn.Module):
         attention = self.attention(x, x, x, trg_mask)  # ENC (n x m) => (n x H)
         query = self.dropout(self.norm(attention + x))
         out = self.transformer_block(value, key, query, src_mask)
+        
         return out
 
     
@@ -167,11 +179,11 @@ class Decoder(nn.Module):
         x = self.dropout((self.word_embedding(x) + self.position_embedding(positions)))
 
         for layer in self.layers:
-            x = layer(x, enc_out, enc_out, src_mask, trg_mask)
+            x, attention= layer(x, enc_out, enc_out, src_mask, trg_mask)
 
         out = self.fc_out(x)
 
-        return out
+        return out, attention
 
 class Transformer(nn.Module):
     def __init__(
