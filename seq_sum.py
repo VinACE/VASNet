@@ -1,3 +1,7 @@
+"""
+# https://github.com/bentrevett/pytorch-seq2seq/issues/129
+# https://github.com/bentrevett/pytorch-seq2seq/blob/master/6%20-%20Attention%20is%20All%20You%20Need.ipynb
+"""
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -16,8 +20,6 @@ import random
 import math
 import time
 from IPython.core.debugger import set_trace #set_trace()
-
-https://github.com/bentrevett/pytorch-seq2seq/issues/129
 
 
 ######## ENCODER PART #################################
