@@ -17,6 +17,9 @@ import math
 import time
 from IPython.core.debugger import set_trace #set_trace()
 
+https://github.com/bentrevett/pytorch-seq2seq/issues/129
+
+
 ######## ENCODER PART #################################
 
 class Encoder(nn.Module):
@@ -479,7 +482,7 @@ if __name__ == "__main__":
 
 
 
-    model = Seq2Seq(src_vocab_size, trg_vocab_size, SRC_PAD_IDX, TRG_PAD_IDX, device).to(
+    model = Seq2Seq(enc, dec, SRC_PAD_IDX, TRG_PAD_IDX, device).to(
         device
     )
     out, attention = model(x, trg[:, :-1])
