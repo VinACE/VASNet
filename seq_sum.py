@@ -49,6 +49,7 @@ class Encoder(nn.Module):
         self.scale = torch.sqrt(torch.FloatTensor([hid_dim])).to(device)
         
     def forward(self, src, src_mask):
+        set_trace()
         
         #src = [batch size, src len]
         #src_mask = [batch size, src len]
