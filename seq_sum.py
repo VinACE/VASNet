@@ -15,7 +15,7 @@ import numpy as np
 import random
 import math
 import time
-
+from IPython.core.debugger import set_trace #set_trace()
 
 ######## ENCODER PART #################################
 
