@@ -20,7 +20,7 @@ import time
 ######## ENCODER PART #################################
 
 class Encoder(nn.Module):
-    # import pdb;pdb.set_trace()
+    set_trace()
     def __init__(self, 
                  input_dim, 
                  hid_dim, 
@@ -72,7 +72,7 @@ class Encoder(nn.Module):
         return src
 
 class EncoderLayer(nn.Module):
-    # import pdb;pdb.set_trace()
+    set_trace()
     def __init__(self, 
                  hid_dim, 
                  n_heads, 
@@ -90,6 +90,7 @@ class EncoderLayer(nn.Module):
         self.dropout = nn.Dropout(dropout)
         
     def forward(self, src, src_mask):
+        set_trace()
         
         #src = [batch size, src len, hid dim]
         #src_mask = [batch size, src len]
@@ -135,6 +136,8 @@ class MultiHeadAttentionLayer(nn.Module):
         self.scale = torch.sqrt(torch.FloatTensor([self.head_dim])).to(device)
         
     def forward(self, query, key, value, mask = None):
+
+        set_trace()
         
         batch_size = query.shape[0]
         
@@ -330,7 +333,7 @@ class DecoderLayer(nn.Module):
         return trg, attention
 
 class Seq2Seq(nn.Module):
-    # import pdb;pdb.set_trace()
+    set_trace()
     def __init__(self, 
                  encoder, 
                  decoder, 
@@ -346,7 +349,7 @@ class Seq2Seq(nn.Module):
         self.device = device
         
     def make_src_mask(self, src):
-        # import pdb;pdb.set_trace()
+        set_trace()
         #src = [batch size, src len]
         
         src_mask = (src != self.src_pad_idx).unsqueeze(1).unsqueeze(2)
@@ -379,7 +382,7 @@ class Seq2Seq(nn.Module):
         
         #src = [batch size, src len]
         #trg = [batch size, trg len]
-        # import pdb;pdb.set_trace()    
+        set_trace()    
         src_mask = self.make_src_mask(src)
         trg_mask = self.make_trg_mask(trg)
         
@@ -399,7 +402,7 @@ class Seq2Seq(nn.Module):
 
 
 # if __name__ == "__main__":
-#     #import pdb;pdb.set_trace()
+#     set_trace()
 #     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #     x = torch.tensor([[1, 5, 6, 4, 3, 9, 5, 2, 0], [1, 8, 7, 3, 4, 5, 6, 7, 2]]).to(
 #         device
@@ -420,6 +423,7 @@ class Seq2Seq(nn.Module):
 # INPUT_DIM = len(SRC.vocab)
 # OUTPUT_DIM = len(TRG.vocab)
 if __name__ == "__main__":
+    set_trace()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     INPUT_DIM = 10
     OUTPUT_DIM = 10
