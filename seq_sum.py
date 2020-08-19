@@ -21,6 +21,7 @@ from IPython.core.debugger import set_trace #set_trace()
 
 class Encoder(nn.Module):
     set_trace()
+    print("entering Encoder")
     def __init__(self, 
                  input_dim, 
                  hid_dim, 
