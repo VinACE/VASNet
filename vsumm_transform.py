@@ -1,5 +1,6 @@
 """
 # TODO Multihead implementation https://github.com/dreamgonfly/Transformer-pytorch/blob/master/models.py
+https://www.youtube.com/watch?v=U0s0f995w14  Pytorch Transformers from Scratch (Attention is all you need)
 """
 
 import torch
