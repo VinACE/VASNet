@@ -25,7 +25,7 @@ from IPython.core.debugger import set_trace #set_trace()
 ######## ENCODER PART #################################
 
 class Encoder(nn.Module):
-    set_trace()
+    # set_trace()
     print("entering Encoder")
     def __init__(self, 
                  input_dim, 
@@ -55,7 +55,7 @@ class Encoder(nn.Module):
         self.scale = torch.sqrt(torch.FloatTensor([hid_dim])).to(device)
         
     def forward(self, src, src_mask):
-        set_trace()
+        # set_trace()
         
         #src = [batch size, src len]
         #src_mask = [batch size, src len]
@@ -79,7 +79,7 @@ class Encoder(nn.Module):
         return src
 
 class EncoderLayer(nn.Module):
-    set_trace()
+    # set_trace()
     def __init__(self, 
                  hid_dim, 
                  n_heads, 
@@ -97,7 +97,7 @@ class EncoderLayer(nn.Module):
         self.dropout = nn.Dropout(dropout)
         
     def forward(self, src, src_mask):
-        set_trace()
+        # set_trace()
         
         #src = [batch size, src len, hid dim]
         #src_mask = [batch size, src len]
@@ -144,7 +144,7 @@ class MultiHeadAttentionLayer(nn.Module):
         
     def forward(self, query, key, value, mask = None):
 
-        set_trace()
+        # set_trace()
         
         batch_size = query.shape[0]
         
@@ -340,7 +340,7 @@ class DecoderLayer(nn.Module):
         return trg, attention
 
 class Seq2Seq(nn.Module):
-    set_trace()
+    # set_trace()
     def __init__(self, 
                  encoder, 
                  decoder, 
@@ -356,7 +356,7 @@ class Seq2Seq(nn.Module):
         self.device = device
         
     def make_src_mask(self, src):
-        set_trace()
+        # set_trace()
         #src = [batch size, src len]
         
         src_mask = (src != self.src_pad_idx).unsqueeze(1).unsqueeze(2)
@@ -389,7 +389,7 @@ class Seq2Seq(nn.Module):
         
         #src = [batch size, src len]
         #trg = [batch size, trg len]
-        set_trace()    
+        # set_trace()    
         src_mask = self.make_src_mask(src)
         trg_mask = self.make_trg_mask(trg)
         
@@ -430,7 +430,7 @@ class Seq2Seq(nn.Module):
 # INPUT_DIM = len(SRC.vocab)
 # OUTPUT_DIM = len(TRG.vocab)
 if __name__ == "__main__":
-    set_trace()
+    # set_trace()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     INPUT_DIM = 10
     OUTPUT_DIM = 10
