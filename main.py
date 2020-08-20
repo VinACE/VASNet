@@ -20,6 +20,7 @@ from config import  *
 from sys_utils import *
 from vsum_tools import  *
 from vasnet_model import  *
+from seq_sum import *
 
 
 def weights_init(m):
@@ -64,7 +65,6 @@ def lookup_weights_splits_file(path, dataset_name, dataset_type, split_id):
 
 
 class AONet:
-
     def __init__(self, hps: HParameters):
         self.hps = hps
         self.model = None
@@ -159,9 +159,45 @@ class AONet:
         np.random.seed(rnd_seed)
         torch.manual_seed(rnd_seed)
 
-        self.model = VASNet()
+        #### ses2seq network initialization #################################
+
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        INPUT_DIM = 1024
+        OUTPUT_DIM = 1024
+        HID_DIM = 256
+        ENC_LAYERS = 3
+        DEC_LAYERS = 3
+        ENC_HEADS = 8
+        DEC_HEADS = 8
+        ENC_PF_DIM = 512
+        DEC_PF_DIM = 512
+        ENC_DROPOUT = 0.1
+        DEC_DROPOUT = 0.1
+
+        SRC_PAD_IDX = 0
+        TRG_PAD_IDX = 0
+
+        enc = Encoder(INPUT_DIM, 
+                    HID_DIM, 
+                    ENC_LAYERS, 
+                    ENC_HEADS, 
+                    ENC_PF_DIM, 
+                    ENC_DROPOUT, 
+                    device)
+
+        dec = Decoder(OUTPUT_DIM, 
+                    HID_DIM, 
+                    DEC_LAYERS, 
+                    DEC_HEADS, 
+                    DEC_PF_DIM, 
+                    DEC_DROPOUT, 
+                    device)
+
+
+        # self.model = VASNet()
+        self.model = Seq2Seq()
         self.model.eval()
-        self.model.apply(weights_init)
+        # self.model.apply(weights_init) ## TODO Need to check how to initialize the weights.
         #print(self.model)
 
         cuda_device = cuda_device or self.hps.cuda_device
@@ -200,7 +236,7 @@ class AONet:
 
     def train(self, output_dir='EX-0'):
 
-        print("Initializing VASNet model and optimizer...")
+        print("Initializing VASNet/Seq2seq model and optimizer...")
         self.model.train()
 
         criterion = nn.MSELoss()
