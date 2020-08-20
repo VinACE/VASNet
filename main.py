@@ -452,7 +452,7 @@ if __name__ == "__main__":
     print_pkg_versions()
 
     parser = argparse.ArgumentParser("PyTorch implementation of paper \"Summarizing Videos with Attention\"")
-    parser.add_argument('-r', '--root', type=str, default='./VASNet/', help="Project root directory")
+    parser.add_argument('-r', '--root', type=str, default='/content/VASNet/', help="Project root directory")
     parser.add_argument('-d', '--datasets', type=str, help="Path to a comma separated list of h5 datasets")
     parser.add_argument('-s', '--splits', type=str, help="Comma separated list of split files.")
     parser.add_argument('-t', '--train', action='store_true', help="Train")
