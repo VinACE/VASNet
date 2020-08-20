@@ -418,6 +418,10 @@ class Seq2Seq(nn.Module):
 
 # INPUT_DIM = len(SRC.vocab)
 # OUTPUT_DIM = len(TRG.vocab)
+
+if __name__ == "__main__":
+    pass
+
 if __name__ == "__main__":
     # set_trace()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -452,19 +456,19 @@ if __name__ == "__main__":
                 DEC_DROPOUT, 
                 device)
 
-    src_vocab_size = 10
-    trg_vocab_size = 10
+#     src_vocab_size = 10
+#     trg_vocab_size = 10
 
-    x = torch.tensor([[1, 5, 6, 4, 3, 9, 5, 2, 0, 0], [1, 8, 7, 3, 4, 5, 6, 7, 2, 0]]).to(
-        device, dtype=torch.int64
-    )
-    trg =  torch.tensor([[1, 7, 4, 3, 5, 9, 2, 0,0,0], [1, 5, 6, 2, 4, 7, 6, 2,0,0]]).to(device, dtype=torch.int64)
+#     x = torch.tensor([[1, 5, 6, 4, 3, 9, 5, 2, 0, 0], [1, 8, 7, 3, 4, 5, 6, 7, 2, 0]]).to(
+#         device, dtype=torch.int64
+#     )
+#     trg =  torch.tensor([[1, 7, 4, 3, 5, 9, 2, 0,0,0], [1, 5, 6, 2, 4, 7, 6, 2,0,0]]).to(device, dtype=torch.int64)
 
 
-    model = Seq2Seq(enc, dec, SRC_PAD_IDX, TRG_PAD_IDX, device).to(
-        device
-    )
-    out, attention = model(x, trg[:, :-1])
-    print(out.shape)
-    print(attention.shape)
+#     model = Seq2Seq(enc, dec, SRC_PAD_IDX, TRG_PAD_IDX, device).to(
+#         device
+#     )
+#     out, attention = model(x, trg[:, :-1])
+#     print(out.shape)
+#     print(attention.shape)
     

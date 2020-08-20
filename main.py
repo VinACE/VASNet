@@ -193,7 +193,7 @@ class AONet:
                     DEC_DROPOUT, 
                     device)
 
-
+        #############################
         # self.model = VASNet()
         self.model = Seq2Seq()
         self.model.eval()
